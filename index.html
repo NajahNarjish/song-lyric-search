@@ -47,24 +47,16 @@
                 <h1 class="text-center">Lyrics Search</h1>
                 <div class="search-box my-5">
                     <input type="text" class="form-control" id="search-word" placeholder="Enter your artist song name">
-                    <button class="btn btn-success search-btn" onclick = "doSomething()">Search</button>
+                    <button class="btn btn-success search-btn" onclick = "doSearch()">Search</button>
                 </div>
             </div>
            
             <!-- Single Lyrics -->
-            <div class="single-lyrics text-center">
+            <div class="single-lyrics text-center" id="div-lyric">
                 <button class="btn go-back">&lsaquo;</button>
-                <h2 class="text-success mb-4" id="song-title">Pentatonix - Na Na Na</h2>
+                <h2 class="text-success mb-4" id="song-title"></h2>
                 <h6 class="text-success mb-4" id="song-artist"></h6>
-                <pre id="lyric-place" class="lyric text-white">
-                        Wont go whistling like the wind blows,
-                        Looking out my window,
-                        Just to see the shine
-                        Maybe you might call it crazy,
-                        How Im acting lately,
-
-                        Skipping through the sky
-
+                <pre id="lyric-place" class="lyric text-white">     
                 </pre>
             </div>
             <!-- === Fancy results === -->
@@ -81,16 +73,42 @@
     <!-- Custom Script Here -->
     <script>
         // akta function jate search field r lyric clear thakbe
-        function doSomething(){
+        function doSearch(){
+
+            const divSearchResults = document.getElementById("div-search-result");
+            divSearchResults.innerHTML = '';
+
+            const lyricArea = document.getElementById("lyric-place");
+            lyricArea.innerHTML = "";
+
+            const titleOfSong = document.getElementById("song-title");
+            titleOfSong.innerHTML = "";
+
+            const  artistOfSong = document.getElementById("song-artist");
+            artistOfSong.innerHTML = "";
+
+
+
+           
+
             let searchWord = document.getElementById("search-word");
             let searchWordValue = searchWord.value;
-            const divSearchResults = document.getElementById("div-search-result");
+            
+
 
             fetch(`https://api.lyrics.ovh/suggest/${searchWordValue}`)
                 .then (res => res.json())
                 .then (response => {
-                
-                    for(let i=0; i<10; i++){
+                    let numberOfResults = response.data.length;
+                    let resultsToPrint = numberOfResults < 10 ? numberOfResults : 10;
+                    if (resultsToPrint == 0){
+                        divSearchResults.style.display = "none";
+                        const zeroResult = document.createElement("h1");
+                        zeroResult.innerHTML = `Sorry! there are no search results.`
+                        divSearchResults.appendChild(zeroResult);
+                        
+                    } else {    
+                        for(let i=0; i<resultsToPrint; i++){
                         let element = response.data[i];
                         let songTitle = element.title_short;
                         let albumTitle = element.album.title;
@@ -122,14 +140,11 @@
                             fetch(`https://api.lyrics.ovh/v1/${artistName}/${songTitle}/`)
                                 .then (res => res.json())
                                 .then (data => {
-                                console.log(data);
-                                document.getElementById("lyric-place").innerHTML = data.lyrics;
-                                document.getElementById("song-title").innerHTML = songTitle;
-                                document.getElementById("song-artist").innerHTML = artistName;
+                                    lyricArea.innerHTML = data.lyrics;
+                                    titleOfSong.innerHTML = songTitle;
+                                    artistOfSong.innerHTML = artistName;
                                 })
                         }
-
-
 
                         divSearchResults.appendChild(divSingleResult);
                         divSingleResult.appendChild(textDiv);
@@ -139,15 +154,15 @@
                         textDiv.appendChild(titleDescription);
                         buttonDiv.appendChild(button);
 
-
-
                     }
-                    console.log(divSearchResults);
+                    }
+
+                    
                 })
             }
         
     </script>
-<!-- convert to es6, let-const, other description, aager search o theke jacche, add enter with click, good name, no more result found for under 10, if no lyric-->
+<!-- convert to es6, let-const, other description, aager search o theke jacche, add enter with click, good name,  if no lyric, alignment, spacing , do a function-->
 </body>
 
 </html>
