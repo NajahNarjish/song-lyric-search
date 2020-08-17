@@ -20,7 +20,8 @@
             <a class="navbar-brand" href="#">
                 <img src="images/logo.png" alt="Hard Rock Solution">
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+                aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
                 <img src="images/toggler-icon.svg" alt="">
             </button>
             <div class="collapse navbar-collapse" id="collapsibleNavId">
@@ -32,7 +33,8 @@
                         <a class="nav-link" href="#">Link</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">Dropdown</a>
                         <div class="dropdown-menu" aria-labelledby="dropdownId">
                             <a class="dropdown-item" href="#">Action 1</a>
                             <a class="dropdown-item" href="#">Action 2</a>
@@ -47,16 +49,16 @@
                 <h1 class="text-center">Lyrics Search</h1>
                 <div class="search-box my-5">
                     <input type="text" class="form-control" id="search-word" placeholder="Enter your artist song name">
-                    <button class="btn btn-success search-btn" onclick = "doSearch()">Search</button>
+                    <button class="btn btn-success search-btn" onclick="doSearch()">Search</button>
                 </div>
             </div>
-           
+
             <!-- Single Lyrics -->
             <div class="single-lyrics text-center" id="div-lyric">
                 <button class="btn go-back">&lsaquo;</button>
                 <h2 class="text-success mb-4" id="song-title"></h2>
                 <h6 class="text-success mb-4" id="song-artist"></h6>
-                <pre id="lyric-place" class="lyric text-white">     
+                <pre id="lyric-place" class="lyric text-white">
                 </pre>
             </div>
             <!-- === Fancy results === -->
@@ -72,98 +74,97 @@
 
     <!-- Custom Script Here -->
     <script>
-        // akta function jate search field r lyric clear thakbe
-        function doSearch(){
+        const divSearchResults = document.getElementById("div-search-result");
+        const lyricArea = document.getElementById("lyric-place");
+        const titleOfSong = document.getElementById("song-title");
+        const artistOfSong = document.getElementById("song-artist");
+        const searchWord = document.getElementById("search-word");
+        const divOfLyric = document.getElementById("div-lyric");
 
-            const divSearchResults = document.getElementById("div-search-result");
+        function allClear() {
             divSearchResults.innerHTML = '';
+            divOfLyric.style.display = "none";
+        }
 
-            const lyricArea = document.getElementById("lyric-place");
-            lyricArea.innerHTML = "";
+        function doSearch() {
+            allClear();
 
-            const titleOfSong = document.getElementById("song-title");
-            titleOfSong.innerHTML = "";
-
-            const  artistOfSong = document.getElementById("song-artist");
-            artistOfSong.innerHTML = "";
-
-
-
-           
-
-            let searchWord = document.getElementById("search-word");
             let searchWordValue = searchWord.value;
-            
-
 
             fetch(`https://api.lyrics.ovh/suggest/${searchWordValue}`)
-                .then (res => res.json())
-                .then (response => {
+                .then(res => res.json())
+                .then(response => {
                     let numberOfResults = response.data.length;
                     let resultsToPrint = numberOfResults < 10 ? numberOfResults : 10;
-                    if (resultsToPrint == 0){
+                    
+                    if (resultsToPrint == 0) {
                         divSearchResults.style.display = "none";
                         const zeroResult = document.createElement("h1");
                         zeroResult.innerHTML = `Sorry! there are no search results.`
                         divSearchResults.appendChild(zeroResult);
-                        
-                    } else {    
-                        for(let i=0; i<resultsToPrint; i++){
-                        let element = response.data[i];
-                        let songTitle = element.title_short;
-                        let albumTitle = element.album.title;
-                        let artistName  = element.artist.name;
-                  
-                        const divSingleResult = document.createElement("div");
-                        divSingleResult.className += "single-result row align-items-center my-3 p-3"; 
+                    } else {
+                        for (let i = 0; i < resultsToPrint; i++) {
+                            let element = response.data[i];
+                            let songTitle = element.title_short;
+                            let albumTitle = element.album.title;
+                            let artistName = element.artist.name;
 
-                        const textDiv = document.createElement("div");
-                        textDiv.className += "col-md-9";
+                            const divSingleResult = document.createElement("div");
+                            divSingleResult.className += "single-result row align-items-center my-3 p-3";
 
-                        const buttonDiv = document.createElement("div");
-                        buttonDiv.className += "col-md-3 text-md-right text-center";
-                        
-                        const titleHead = document.createElement("h2");
-                        titleHead.className += "lyrics-name";
-                        titleHead.innerHTML = songTitle;
+                            const textDiv = document.createElement("div");
+                            textDiv.className += "col-md-9";
 
-                        const titleDescription = document.createElement("p");
-                        titleDescription.className += "author lead";
-                        titleDescription.innerHTML = albumTitle;
+                            const buttonDiv = document.createElement("div");
+                            buttonDiv.className += "col-md-3 text-md-right text-center";
 
-                        const button = document.createElement("button");
-                        button.className += "btn btn-success";
-                        button.innerHTML = "Get Lyrics";
-                        button.addEventListener("click", getLyric);
+                            const titleHeadSong = document.createElement("h2");
+                            titleHeadSong.className += "lyrics-name";
+                            titleHeadSong.innerHTML = songTitle;
 
-                        function getLyric(){
-                            fetch(`https://api.lyrics.ovh/v1/${artistName}/${songTitle}/`)
-                                .then (res => res.json())
-                                .then (data => {
-                                    lyricArea.innerHTML = data.lyrics;
-                                    titleOfSong.innerHTML = songTitle;
-                                    artistOfSong.innerHTML = artistName;
-                                })
+                            const titleAlbumName = document.createElement("p");
+                            titleAlbumName.className += "author lead";
+                            titleAlbumName.innerHTML = `Album : ${albumTitle}`;
+
+                            const titleArtistName = document.createElement("p");
+                            titleArtistName.className += "author lead";
+                            titleArtistName.innerHTML = `Artist : ${artistName}`;
+
+                            const button = document.createElement("button");
+                            button.className += "btn btn-success";
+                            button.innerHTML = "Get Lyrics";
+                            button.addEventListener("click", function () {
+                                getLyric(artistName, songTitle);
+                            });
+
+                            divSearchResults.appendChild(divSingleResult);
+                            divSingleResult.appendChild(textDiv);
+                            divSingleResult.appendChild(buttonDiv);
+
+                            textDiv.appendChild(titleHeadSong);
+                            textDiv.appendChild(titleAlbumName);
+                            textDiv.appendChild(titleArtistName);
+
+                            buttonDiv.appendChild(button);
                         }
-
-                        divSearchResults.appendChild(divSingleResult);
-                        divSingleResult.appendChild(textDiv);
-                        divSingleResult.appendChild(buttonDiv);
-
-                        textDiv.appendChild(titleHead);
-                        textDiv.appendChild(titleDescription);
-                        buttonDiv.appendChild(button);
-
                     }
-                    }
-
-                    
                 })
-            }
-        
+        }
+
+        function getLyric(artistName, songTitle) {
+            fetch(`https://api.lyrics.ovh/v1/${artistName}/${songTitle}/`)
+                .then(res => res.json())
+                .then(data => {
+                    lyricArea.innerHTML = data.lyrics == undefined ? `Sorry! no lyrics found` : data.lyrics;
+
+                    titleOfSong.innerHTML = songTitle;
+                    artistOfSong.innerHTML = artistName;
+                    divOfLyric.style.display = "block";
+                })
+        }
+
     </script>
-<!-- convert to es6, let-const, other description, aager search o theke jacche, add enter with click, good name,  if no lyric, alignment, spacing , do a function-->
+    <!-- convert to es6, let-const,  , good name,    do a function-->
 </body>
 
 </html>
-
