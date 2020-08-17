@@ -63,7 +63,6 @@
             </div>
             <!-- === Fancy results === -->
             <div class="search-result col-md-8 mx-auto py-4" id="div-search-result"></div>
-
         </main>
     </div>
     <!-- Optional JavaScript -->
@@ -96,57 +95,58 @@
                 .then(response => {
                     let numberOfResults = response.data.length;
                     let resultsToPrint = numberOfResults < 10 ? numberOfResults : 10;
-                    
+
                     if (resultsToPrint == 0) {
                         divSearchResults.style.display = "none";
                         const zeroResult = document.createElement("h1");
                         zeroResult.innerHTML = `Sorry! there are no search results.`
                         divSearchResults.appendChild(zeroResult);
-                    } else {
-                        for (let i = 0; i < resultsToPrint; i++) {
-                            let element = response.data[i];
-                            let songTitle = element.title_short;
-                            let albumTitle = element.album.title;
-                            let artistName = element.artist.name;
+                        divSearchResults.style.display = "block";
+                        return;
+                    }
+                    for (let i = 0; i < resultsToPrint; i++) {
+                        let element = response.data[i];
+                        let songTitle = element.title_short;
+                        let albumTitle = element.album.title;
+                        let artistName = element.artist.name;
 
-                            const divSingleResult = document.createElement("div");
-                            divSingleResult.className += "single-result row align-items-center my-3 p-3";
+                        const divSingleResult = document.createElement("div");
+                        divSingleResult.className += "single-result row align-items-center my-3 p-3";
 
-                            const textDiv = document.createElement("div");
-                            textDiv.className += "col-md-9";
+                        const textDiv = document.createElement("div");
+                        textDiv.className += "col-md-9";
 
-                            const buttonDiv = document.createElement("div");
-                            buttonDiv.className += "col-md-3 text-md-right text-center";
+                        const buttonDiv = document.createElement("div");
+                        buttonDiv.className += "col-md-3 text-md-right text-center";
 
-                            const titleHeadSong = document.createElement("h2");
-                            titleHeadSong.className += "lyrics-name";
-                            titleHeadSong.innerHTML = songTitle;
+                        const titleHeadSong = document.createElement("h2");
+                        titleHeadSong.className += "lyrics-name";
+                        titleHeadSong.innerHTML = songTitle;
 
-                            const titleAlbumName = document.createElement("p");
-                            titleAlbumName.className += "author lead";
-                            titleAlbumName.innerHTML = `Album : ${albumTitle}`;
+                        const titleAlbumName = document.createElement("p");
+                        titleAlbumName.className += "author lead";
+                        titleAlbumName.innerHTML = `Album : ${albumTitle}`;
 
-                            const titleArtistName = document.createElement("p");
-                            titleArtistName.className += "author lead";
-                            titleArtistName.innerHTML = `Artist : ${artistName}`;
+                        const titleArtistName = document.createElement("p");
+                        titleArtistName.className += "author lead";
+                        titleArtistName.innerHTML = `Artist : ${artistName}`;
 
-                            const button = document.createElement("button");
-                            button.className += "btn btn-success";
-                            button.innerHTML = "Get Lyrics";
-                            button.addEventListener("click", function () {
-                                getLyric(artistName, songTitle);
-                            });
+                        const button = document.createElement("button");
+                        button.className += "btn btn-success";
+                        button.innerHTML = "Get Lyrics";
+                        button.addEventListener("click", function () {
+                            getLyric(artistName, songTitle);
+                        });
 
-                            divSearchResults.appendChild(divSingleResult);
-                            divSingleResult.appendChild(textDiv);
-                            divSingleResult.appendChild(buttonDiv);
+                        divSearchResults.appendChild(divSingleResult);
+                        divSingleResult.appendChild(textDiv);
+                        divSingleResult.appendChild(buttonDiv);
 
-                            textDiv.appendChild(titleHeadSong);
-                            textDiv.appendChild(titleAlbumName);
-                            textDiv.appendChild(titleArtistName);
+                        textDiv.appendChild(titleHeadSong);
+                        textDiv.appendChild(titleAlbumName);
+                        textDiv.appendChild(titleArtistName);
 
-                            buttonDiv.appendChild(button);
-                        }
+                        buttonDiv.appendChild(button);
                     }
                 })
         }
@@ -162,9 +162,6 @@
                     divOfLyric.style.display = "block";
                 })
         }
-
     </script>
-    <!-- convert to es6, let-const,  , good name,    do a function-->
 </body>
-
 </html>
